@@ -10,6 +10,7 @@ function Pict({ pictId = 0, x = 0, y = 0 }) {
         overflow: "hidden",
         width: 32,
         height: 32,
+        imageRendering: "pixelated",
       }}
     >
       <img
