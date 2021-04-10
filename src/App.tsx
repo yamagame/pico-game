@@ -2,6 +2,12 @@ import React from "react";
 import "./App.css";
 import Pict from "Pict";
 
+interface SoundPlayer {
+  play: (mml: string, track: number) => void;
+  stop: (track: number) => void;
+}
+const Sound: SoundPlayer = (window as any).SOUND;
+
 enum KEYCODE {
   UP = "ArrowUp",
   DOWN = "ArrowDown",
@@ -14,6 +20,10 @@ enum BG {
   BLOCK = 0,
   ROCK = 3,
   PLAYER = 23,
+}
+
+enum SE {
+  move = "@15-1o5l16v9cd",
 }
 
 interface Object {
@@ -50,15 +60,19 @@ function App() {
       switch (e.code) {
         case KEYCODE.UP:
           if (y > 0) y--;
+          Sound.play(SE.move, 0);
           break;
         case KEYCODE.DOWN:
           if (y < mapSize.height - 1) y++;
+          Sound.play(SE.move, 0);
           break;
         case KEYCODE.LEFT:
           if (x > 0) x--;
+          Sound.play(SE.move, 0);
           break;
         case KEYCODE.RIGHT:
           if (x < mapSize.width - 1) x++;
+          Sound.play(SE.move, 0);
           break;
         case KEYCODE.SPACE:
           break;
