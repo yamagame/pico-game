@@ -118,8 +118,11 @@ function App() {
   }, [mouseState]);
   React.useEffect(() => {
     if (mouseState.down) {
-      mapData[mouseState.y][mouseState.x] = BG.BLOCK;
-      setMapData([...mapData]);
+      const { x, y } = mouseState;
+      if (x >= 0 && x < mapSize.width && y >= 0 && y < mapSize.height) {
+        mapData[y][x] = BG.BLOCK;
+        setMapData([...mapData]);
+      }
     }
   }, [mouseState, mapData]);
   React.useEffect(() => {
@@ -157,8 +160,10 @@ function App() {
   }, [player, mapData]);
   const onClickHandler = (x: number, y: number) => {
     return () => {
-      mapData[y][x] = BG.ROCK;
-      setMapData([...mapData]);
+      if (x >= 0 && x < mapSize.width && y >= 0 && y < mapSize.height) {
+        mapData[y][x] = BG.ROCK;
+        setMapData([...mapData]);
+      }
     };
   };
   return (
