@@ -17,13 +17,14 @@ enum KEYCODE {
 }
 
 enum BG {
-  BLOCK = 0,
+  BLOCK = 6,
   ROCK = 3,
   PLAYER = 23,
+  KEY = 11,
 }
 
 enum SE {
-  move = "@15-1o5l16v9cd",
+  move = "@0-0 o5 l16 v12 cd",
 }
 
 interface Object {
@@ -31,28 +32,60 @@ interface Object {
   y: number;
 }
 
-const mapSize = { width: 11, height: 11 };
+const mapSize = { width: 21, height: 21 };
 
 const initialMapData = () => {
   const mapData = [];
   const { width, height } = mapSize;
-  for (var y = 0; y < height; y++) {
+  for (let y = 0; y < height; y++) {
     const line = [];
-    for (var x = 0; x < width; x++) {
-      if (Math.random() < 0.1) {
-        line.push(BG.ROCK);
-      } else {
-        line.push(BG.BLOCK);
-      }
+    for (let x = 0; x < width; x++) {
+      line.push(BG.BLOCK);
     }
     mapData.push(line);
+  }
+  for (let y = 2; y < height - 2; y += 2) {
+    for (let x = 2; x < width - 2; x += 2) {
+      mapData[y][x] = BG.ROCK;
+    }
+  }
+  for (let x = 0; x < width; x++) {
+    mapData[0][x] = BG.ROCK;
+    mapData[mapSize.height - 1][x] = BG.ROCK;
+  }
+  for (let y = 0; y < height; y++) {
+    mapData[y][0] = BG.ROCK;
+    mapData[y][mapSize.width - 1] = BG.ROCK;
+  }
+  for (let y = 2; y < height - 2; y += 2) {
+    for (let x = 2; x < width - 2; x += 2) {
+      if (mapData[y][x] === BG.ROCK) {
+        const d = [-1, 1];
+        const dd = [];
+        for (let iy = 0; iy < 2; iy++) {
+          if (mapData[y + d[iy]][x] !== BG.ROCK) {
+            if (y !== 2 && d[iy] === -1) continue;
+            dd.push([y + d[iy], x]);
+          }
+        }
+        for (let ix = 0; ix < 2; ix++) {
+          if (mapData[y][x + d[ix]] !== BG.ROCK) {
+            dd.push([y, x + d[ix]]);
+          }
+        }
+        if (dd.length > 0) {
+          const id = Math.floor(Math.random() * dd.length);
+          mapData[dd[id][0]][dd[id][1]] = BG.ROCK;
+        }
+      }
+    }
   }
   return mapData;
 };
 
 function App() {
   const [mapData, setMapData] = React.useState(initialMapData());
-  const [player, setPlayer] = React.useState({ x: 5, y: 5 } as Object);
+  const [player, setPlayer] = React.useState({ x: 1, y: 1 } as Object);
   React.useEffect(() => {
     const onKeyDown = function (e: KeyboardEvent) {
       let x = player.x;
@@ -105,6 +138,7 @@ function App() {
           />
         ));
       })}
+      <Pict pictId={BG.KEY} x={mapSize.width - 2} y={mapSize.height - 2} />
       <Pict pictId={BG.PLAYER} x={player.x} y={player.y} />
     </div>
   );
