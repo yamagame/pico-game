@@ -19,6 +19,7 @@ function Pict({ pictId = 0, x = 0, y = 0, onClick }: Props) {
         width: 32,
         height: 32,
         imageRendering: "pixelated",
+        userSelect: "none",
       }}
       onClick={onClick}
     >
@@ -27,6 +28,7 @@ function Pict({ pictId = 0, x = 0, y = 0, onClick }: Props) {
           position: "relative",
           left: -pictX * 32,
           top: -pictY * 32,
+          pointerEvents: "none",
         }}
         src="characters.png"
         alt=""

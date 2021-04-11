@@ -86,6 +86,42 @@ const initialMapData = () => {
 function App() {
   const [mapData, setMapData] = React.useState(initialMapData());
   const [player, setPlayer] = React.useState({ x: 1, y: 1 } as Object);
+  const [mouseState, setMouseState] = React.useState({
+    x: 0,
+    y: 0,
+    down: false,
+  });
+  React.useEffect(() => {
+    const onMouseMove = function (e: MouseEvent) {
+      if (mouseState.down) {
+        const x = Math.floor(e.clientX / 32);
+        const y = Math.floor(e.clientY / 32);
+        setMouseState({ ...mouseState, x, y });
+      }
+    };
+    const onMouseDown = function (e: MouseEvent) {
+      const x = Math.floor(e.clientX / 32);
+      const y = Math.floor(e.clientY / 32);
+      setMouseState({ ...mouseState, down: true, x, y });
+    };
+    const onMouseUp = function (e: MouseEvent) {
+      setMouseState({ ...mouseState, down: false });
+    };
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mouseup", onMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [mouseState]);
+  React.useEffect(() => {
+    if (mouseState.down) {
+      mapData[mouseState.y][mouseState.x] = BG.BLOCK;
+      setMapData([...mapData]);
+    }
+  }, [mouseState, mapData]);
   React.useEffect(() => {
     const onKeyDown = function (e: KeyboardEvent) {
       let x = player.x;
